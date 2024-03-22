@@ -1,1 +1,1 @@
-FiveWestTest is a FastAPI application that connects to VALR's WebSocket API to stream order book updates in real-time. Additionally, it includes a React.js frontend for querying the API and fetching the effective price of a given quantity of cryptocurrency in another currency.
+FiveWestTest is a FastAPI application that connects to VALR's WebSocket API to stream order book updates in real-time. Additionally, it includes a React.js frontend for querying the API and fetching the effective price of a given quantity of BTC in USDC.
