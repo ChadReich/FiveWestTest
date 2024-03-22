@@ -1,11 +1,11 @@
 import asyncio
 import json
 import websockets
-from typing import Optional, List
+from typing import List
 from fastapi import FastAPI, Query, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from backend.orderbook import OrderBook
-from fastapi.responses import FileResponse
 
 # Create FastAPI instance
 app = FastAPI()
@@ -43,7 +43,6 @@ async def connect_to_valr_trade_websocket():
                 data = await websocket.recv()
                 print("Received data from WebSocket:", data)
                 update_data = json.loads(data)
-                #print(update_data)
                 if update_data["type"] == "FULL_ORDERBOOK_SNAPSHOT":
                     print("Processing full order book snapshot update:", update_data)
                     order_book.process_full_orderbook_snapshot(update_data)
@@ -51,20 +50,9 @@ async def connect_to_valr_trade_websocket():
                     order_book.process_full_orderbook_update(update_data)
                     print("Processing full order book update:", update_data)
 
-                #print(order_book.order_book)
             except Exception as e:
                 print(f"Error: {e}")
 
-'''
-        # Continuously receive and print updates from the WebSocket with 'python main.py'
-        while True:
-            try:
-                data = await websocket.recv()
-                print("Received data:", data)
-            except Exception as e:
-                print(f"Error: {e}")
-
-'''
 
 # API endpoints
 # Define a route to retrieve the current state of the order book
@@ -99,7 +87,7 @@ async def calculate_price(
         for order_quantity in orders.items():
             order_quantity = float(order_quantity)
             ask_price = float(ask_price)
-            print("Processing order:", order_id, "Quantity:", order_quantity, "Ask Price:", ask_price)
+            print("Processing order:", "Quantity:", order_quantity, "Ask Price:", ask_price)
 
             if remaining_quantity >= order_quantity:
                 target_currency_price += order_quantity * ask_price
@@ -118,7 +106,8 @@ async def calculate_price(
 # Route to serve the React JS frontend
 @app.get("/", include_in_schema=False)
 async def serve_frontend():
-    return FileResponse("../frontend/btc_price_calculator/build/index.html")
+    return FileResponse("../frontend/public/index.html")
+
 
 # Run the WebSocket connection coroutine when the application starts/script is executed
 if __name__ == "__main__":
